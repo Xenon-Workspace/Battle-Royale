@@ -1,2 +1,2 @@
-rootProject.name = "battle"
+rootProject.name = "battle-mine"
 

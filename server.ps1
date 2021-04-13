@@ -16,8 +16,7 @@ $Version = "1.16.5"
 # Plugins
 $Plugins = @(
 "https://github.com/monun/kotlin-plugin/releases/latest/download/Kotlin-1.4.31.jar",
-"https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/target/ProtocolLib.jar",
-"https://media.forgecdn.net/files/3172/946/worldedit-bukkit-7.2.2-dist.jar"
+"https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/target/ProtocolLib.jar"
 )
 
 # Backup (7z)
