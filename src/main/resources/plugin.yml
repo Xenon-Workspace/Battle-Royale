@@ -1,5 +1,8 @@
-main: com.github.monulo.sampleplugin.SamplePlugin
+main: com.github.xenon.battle.plugin.BattlePlugin
 version: 1.0
-name: Tap-Sample-Plugin
+name: BattleRoyale
 api-version: 1.16
 depend: [Kotlin, ProtocolLib]
+commands:
+  bf:
+    permission: op
