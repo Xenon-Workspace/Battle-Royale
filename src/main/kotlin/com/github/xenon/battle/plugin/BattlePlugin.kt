@@ -16,6 +16,7 @@ class BattlePlugin : JavaPlugin() {
         }
         val world = Bukkit.getWorlds().first()
         world.worldBorder.setCenter(0.5, 0.5)
+        world.worldBorder.setSize(2000.0, 0)
         dataFolder.mkdirs()
         setupKommands()
     }

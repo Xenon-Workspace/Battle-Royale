@@ -56,10 +56,10 @@ class BattleListener(val process: BattleProcess) : Listener {
                 }
             }
         }
-        if(player.killer != null) {
+        if(player.killer is Player) {
             process.player(player.killer as Player)?.list?.add(player)
             process.player(player)?.list?.forEach {
-                if(process.player(it)?.rank == -2) {
+                if(process.player(it)?.rank!! <= -1) {
                     process.player(player.killer as Player)?.list?.add(it)
                 } else {
                     it.kick(text("You are Knocked Down"))
@@ -68,10 +68,10 @@ class BattleListener(val process: BattleProcess) : Listener {
         } else {
             val random = Random.nextInt(process.survivePlayers.count())
             val p = process.survivePlayers[random]
-            process.player(p as Player)?.list?.add(player)
+            process.player(p.player!!)?.list?.add(player)
             process.player(player)?.list?.forEach {
-                if(process.player(it)?.rank == -2) {
-                    process.player(p as Player)?.list?.add(it)
+                if(process.player(it)?.rank!! <= -1) {
+                    process.player(p.player!!)?.list?.add(it)
                 } else {
                     it.kick(text("You are Knocked Down"))
                 }

@@ -4,6 +4,7 @@ import com.github.xenon.battle.plugin.BattlePlugin
 import com.google.common.collect.ImmutableMap
 import net.kyori.adventure.text.Component.text
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
@@ -27,6 +28,8 @@ class BattleProcess(val plugin: BattlePlugin) {
     var shrinktime = 300 - (phase - 1) * 60
     var waittime = shrinktime * 2
     var ticks = 0
+    var shrink = false
+    var shrinkTicks = 0
     init {
         players = ImmutableMap.copyOf(
             Bukkit.getOnlinePlayers().asSequence().filter {
@@ -66,6 +69,7 @@ class BattleProcess(val plugin: BattlePlugin) {
                 p.player!!.banPlayer("You are knocked down", "BATTLEROYALE")
             }
         }
+        updateTimer()
         updateBorder()
     }
     fun rank(player: BattlePlayer, killer: BattlePlayer) {
@@ -88,13 +92,69 @@ class BattleProcess(val plugin: BattlePlugin) {
     }
     fun updateBorder() {
         val world = Bukkit.getWorlds().first()
-        ticks++
-        if(ticks == 20) {
-            waittime--
-            ticks = 0
+        if(shrink) {
+            shrinkTicks++
+            if(phase == 1) {
+                if(shrinkTicks == 1) {
+                    world.worldBorder.setSize(1400.0, 300)
+                }
+            }
+            if(phase == 2) {
+                if(shrinkTicks == 1) {
+                    world.worldBorder.setSize(920.0, 240)
+                }
+            }
+            if(phase == 3) {
+                if(shrinkTicks == 1) {
+                    world.worldBorder.setSize(500.0, 180)
+                }
+            }
+            if(phase == 4) {
+                if(shrinkTicks == 1) {
+                    world.worldBorder.setSize(250.0, 120)
+                }
+            }
+            if(phase == 5) {
+                if(shrinkTicks == 1) {
+                    world.worldBorder.setSize(1.0, 60)
+                }
+            }
+        } else {
+            shrinkTicks = 0
         }
-        for(player in Bukkit.getOnlinePlayers()) {
-            player.sendActionBar(text("전장 축소까지 ${waittime}초"))
+    }
+    private fun updateTimer() {
+        if(phase <= 5) {
+            if(!shrink) {
+                ticks++
+                if(ticks == 20) {
+                    waittime--
+                    ticks = 0
+                }
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendActionBar(text("전장 축소까지 ${waittime}초"))
+                }
+                if(waittime == -1) {
+                    shrink = true
+                    ticks = 0
+                    phase++
+                    shrinktime = 300 - (phase - 1) * 60
+                    waittime = shrinktime * 2
+                }
+            } else {
+                ticks++
+                if(ticks == 20) {
+                    shrinktime--
+                    ticks = 0
+                }
+                for(player in Bukkit.getOnlinePlayers()) {
+                    player.sendActionBar(text(" ${ChatColor.RED}전장 축소 중 ${shrinktime}초"))
+                }
+                if(shrinktime == -1) {
+                    shrink = false
+                    ticks = 0
+                }
+            }
         }
     }
 }

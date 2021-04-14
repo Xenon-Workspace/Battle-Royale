@@ -29,7 +29,7 @@ class BattlePlayer(val uniqueId: UUID, name: String) {
         val player = player ?: return
         if(rank == -2) {
             list.forEachIndexed { index, p ->
-                p.velocity = Vector(player.location.x, player.location.y + 4 * index, player.location.z)
+
             }
         }
     }
