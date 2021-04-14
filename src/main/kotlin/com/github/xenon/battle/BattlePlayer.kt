@@ -2,11 +2,14 @@ package com.github.xenon.battle
 
 import com.github.monun.tap.ref.weaky
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import org.bukkit.util.Vector
 import java.util.*
 
 class BattlePlayer(val uniqueId: UUID, name: String) {
+    var list = arrayListOf<Player>()
     var name: String = name
         get() {
             player?.let { field = it.name }
@@ -22,4 +25,12 @@ class BattlePlayer(val uniqueId: UUID, name: String) {
     var rank = -2
     val isOnline
         get() = player != null
+    fun onUpdate() {
+        val player = player ?: return
+        if(rank == -2) {
+            list.forEachIndexed { index, p ->
+                p.velocity = Vector(player.location.x, player.location.y + 4 * index, player.location.z)
+            }
+        }
+    }
 }
