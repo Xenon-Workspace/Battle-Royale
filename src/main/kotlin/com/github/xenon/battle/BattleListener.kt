@@ -1,6 +1,8 @@
 package com.github.xenon.battle
 
+import com.github.xenon.battle.plugin.BattlePlugin.Companion.instance
 import net.kyori.adventure.text.Component.text
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -57,23 +59,20 @@ class BattleListener(val process: BattleProcess) : Listener {
             }
         }
         if(player.killer is Player) {
+            Bukkit.getScheduler().runTaskLater(instance, TeleportTo(player, player.killer as Player), 10L)
             process.player(player.killer as Player)?.list?.add(player)
             process.player(player)?.list?.forEach {
                 if(process.player(it)?.rank!! <= -1) {
                     process.player(player.killer as Player)?.list?.add(it)
-                } else {
-                    it.kick(text("You are Knocked Down"))
                 }
             }
         } else {
             val random = Random.nextInt(process.survivePlayers.count())
-            val p = process.survivePlayers[random]
+            val p = process.survivePlayers[random + 1]
             process.player(p.player!!)?.list?.add(player)
             process.player(player)?.list?.forEach {
                 if(process.player(it)?.rank!! <= -1) {
                     process.player(p.player!!)?.list?.add(it)
-                } else {
-                    it.kick(text("You are Knocked Down"))
                 }
             }
         }
@@ -84,5 +83,10 @@ class BattleListener(val process: BattleProcess) : Listener {
             event.isCancelled = true
             event.leaveMessage(text(""))
         }
+    }
+}
+class TeleportTo(val player: Player, val target: Player): Runnable {
+    override fun run() {
+        player.teleport(target)
     }
 }

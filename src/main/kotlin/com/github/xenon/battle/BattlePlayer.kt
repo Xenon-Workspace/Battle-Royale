@@ -34,9 +34,10 @@ class BattlePlayer(val uniqueId: UUID, name: String) {
         val player = player ?: return
         if(rank == -2) {
             list.forEachIndexed { index, p ->
-                p.allowFlight = true
-                p.isFlying = true
-                Bukkit.dispatchCommand(player, "execute as ${player.name} at @s run tp ${p.name} ~ ~${4 * index} ~")
+                val targetLoc = Location(player.world, player.location.x, player.location.y + 4 * (index + 1), player.location.z)
+                val currentLoc = p.location
+                val velocity = Vector(targetLoc.x - currentLoc.x, targetLoc.y - currentLoc.y, targetLoc.z - currentLoc.z)
+                p.velocity = velocity
                 if(player.gameMode == GameMode.SPECTATOR) {
                     list.remove(p)
                 }

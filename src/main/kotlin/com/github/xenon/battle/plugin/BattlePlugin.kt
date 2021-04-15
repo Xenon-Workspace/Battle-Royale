@@ -7,8 +7,12 @@ import org.bukkit.GameRule
 import org.bukkit.plugin.java.JavaPlugin
 
 class BattlePlugin : JavaPlugin() {
+    companion object {
+        lateinit var instance: BattlePlugin
+    }
     private var process: BattleProcess? = null
     override fun onEnable() {
+        instance = this
         Bukkit.getServer().worlds.forEach { w ->
             w.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true)
             w.setGameRule(GameRule.RANDOM_TICK_SPEED, 0)
