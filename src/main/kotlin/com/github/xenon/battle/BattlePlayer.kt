@@ -27,7 +27,7 @@ class BattlePlayer(val uniqueId: UUID, name: String) {
         }
     var knockoutTicks = 0L
 
-    var rank = -2
+    var rank: Int = -2
     val isOnline
         get() = player != null
     fun onUpdate() {
@@ -36,9 +36,9 @@ class BattlePlayer(val uniqueId: UUID, name: String) {
             list.forEachIndexed { index, p ->
                 val targetLoc = Location(player.world, player.location.x, player.location.y + 4 * (index + 1), player.location.z)
                 val currentLoc = p.location
-                val velocity = Vector(targetLoc.x - currentLoc.x, targetLoc.y - currentLoc.y, targetLoc.z - currentLoc.z)
+                val velocity = Vector((targetLoc.x - currentLoc.x) / 10, (targetLoc.y - currentLoc.y) / 10, (targetLoc.z - currentLoc.z) / 10)
                 p.velocity = velocity
-                if(player.gameMode == GameMode.SPECTATOR) {
+                if(p.gameMode == GameMode.SPECTATOR) {
                     list.remove(p)
                 }
             }

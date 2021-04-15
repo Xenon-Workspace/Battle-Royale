@@ -3,11 +3,11 @@ package com.github.xenon.battle
 import com.github.xenon.battle.plugin.BattlePlugin
 import com.google.common.collect.ImmutableMap
 import net.kyori.adventure.text.Component.text
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.GameMode
+import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.CompassMeta
 import org.bukkit.scheduler.BukkitTask
 import java.util.*
 

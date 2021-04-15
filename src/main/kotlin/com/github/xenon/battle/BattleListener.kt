@@ -1,5 +1,6 @@
 package com.github.xenon.battle
 
+import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent
 import com.github.xenon.battle.plugin.BattlePlugin.Companion.instance
 import net.kyori.adventure.text.Component.text
 import org.bukkit.Bukkit
@@ -7,11 +8,9 @@ import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerKickEvent
-import org.bukkit.event.player.PlayerLoginEvent
-import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.*
 import kotlin.random.Random
 
 class BattleListener(val process: BattleProcess) : Listener {
@@ -59,16 +58,16 @@ class BattleListener(val process: BattleProcess) : Listener {
             }
         }
         if(player.killer is Player) {
-            Bukkit.getScheduler().runTaskLater(instance, TeleportTo(player, player.killer as Player), 10L)
             process.player(player.killer as Player)?.list?.add(player)
             process.player(player)?.list?.forEach {
                 if(process.player(it)?.rank!! <= -1) {
                     process.player(player.killer as Player)?.list?.add(it)
                 }
             }
+            Bukkit.getScheduler().runTaskLater(instance, TeleportTo(player, player.killer as Player), 10L)
         } else {
             val random = Random.nextInt(process.survivePlayers.count())
-            val p = process.survivePlayers[random + 1]
+            val p = process.survivePlayers[random]
             process.player(p.player!!)?.list?.add(player)
             process.player(player)?.list?.forEach {
                 if(process.player(it)?.rank!! <= -1) {
@@ -82,6 +81,32 @@ class BattleListener(val process: BattleProcess) : Listener {
         if(event.reason == "Flying is not enabled on this server") {
             event.isCancelled = true
             event.leaveMessage(text(""))
+        }
+    }
+    @EventHandler
+    fun onPlayerAttack(event: EntityDamageByEntityEvent) {
+        if(event.damager is Player) {
+            val player = event.entity
+            val list = process.player(player as Player)?.list ?: return
+            if(list.contains(event.damager)) {
+                event.isCancelled = true
+            }
+        }
+    }
+    @EventHandler
+    fun onKnockBack(event: EntityKnockbackByEntityEvent) {
+        if(event.hitBy is Player) {
+            val player = event.entity
+            val list = process.player(player as Player)?.list ?: return
+            if(list.contains(event.hitBy)) {
+                event.isCancelled = true
+            }
+        }
+    }
+    @EventHandler
+    fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
+        if(process.player(event.player)!!.rank >= -1) {
+            event.isCancelled = true
         }
     }
 }
