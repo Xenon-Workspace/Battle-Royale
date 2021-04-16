@@ -1,5 +1,6 @@
 package com.github.xenon.battle.plugin
 
+import com.github.monun.kommand.argument.double
 import com.github.monun.kommand.kommand
 import com.github.xenon.battle.BattleProcess
 import org.bukkit.Bukkit
@@ -51,6 +52,11 @@ class BattlePlugin : JavaPlugin() {
             process = null
         }
     }
+    fun phase(int: Double) {
+        if(process != null) {
+            process?.phase = int.toInt()
+        }
+    }
     private fun setupKommands() = kommand {
         register("bf") {
             then("start") {
@@ -61,6 +67,13 @@ class BattlePlugin : JavaPlugin() {
             then("stop") {
                 executes {
                     processStop()
+                }
+            }
+            then("phase") {
+                then("double" to double()) {
+                    executes {
+                        phase(it.parseArgument("double"))
+                    }
                 }
             }
         }

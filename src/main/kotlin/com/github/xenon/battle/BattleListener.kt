@@ -46,18 +46,9 @@ class BattleListener(val process: BattleProcess) : Listener {
     fun onPlayerDeath(event: PlayerDeathEvent) {
         event.deathMessage(null)
         val player = event.entity
-        process.player(player)?.let { victim ->
-            if(victim.rank >= 0 && victim.rank <= -3) return@let
-            player.killer?.let { killer ->
-                val kill = process.player(killer)
-                if(kill != null) {
-                    process.rank(victim, kill)
-                } else {
-                    process.rank(victim)
-                }
-            }
-        }
+        if(process.player(player)?.rank!! >= 0 && process.player(player)?.rank!! <= -3) return
         if(player.killer is Player) {
+            process.rank(process.player(player)!!, process.player(player.killer!!)!!)
             process.player(player.killer as Player)?.list?.add(player)
             process.player(player)?.list?.forEach {
                 if(process.player(it)?.rank!! <= -1) {
@@ -66,6 +57,7 @@ class BattleListener(val process: BattleProcess) : Listener {
             }
             Bukkit.getScheduler().runTaskLater(instance, TeleportTo(player, player.killer as Player), 10L)
         } else {
+            process.rank(process.player(player)!!)
             val random = Random.nextInt(process.survivePlayers.count())
             val p = process.survivePlayers[random]
             process.player(p.player!!)?.list?.add(player)
@@ -74,6 +66,7 @@ class BattleListener(val process: BattleProcess) : Listener {
                     process.player(p.player!!)?.list?.add(it)
                 }
             }
+            Bukkit.getScheduler().runTaskLater(instance, TeleportTo(player, p.player!!), 10L)
         }
     }
     @EventHandler

@@ -1,6 +1,7 @@
 package com.github.xenon.battle
 
 import com.github.xenon.battle.plugin.BattlePlugin
+import com.github.xenon.battle.plugin.BattlePlugin.Companion.instance
 import com.google.common.collect.ImmutableMap
 import net.kyori.adventure.text.Component.text
 import org.bukkit.*
@@ -71,13 +72,16 @@ class BattleProcess(val plugin: BattlePlugin) {
         }
         updateTimer()
         updateBorder()
+        if(survivePlayers.count() <= 1) {
+            instance.processStop()
+        }
     }
     fun rank(player: BattlePlayer, killer: BattlePlayer) {
         require(player.rank <= -1) { "Cannot redefine rank ${player.name}" }
         player.rank += 1
         if(player.rank >= 0) {
             for(p in Bukkit.getOnlinePlayers()) {
-                p.sendMessage("${player.name}님이 탈락하셨습니다.")
+                p.sendMessage("${ChatColor.RED}${ChatColor.BOLD}${player.name}님이 탈락하셨습니다.")
             }
         }
     }
@@ -86,7 +90,7 @@ class BattleProcess(val plugin: BattlePlugin) {
         player.rank += 1
         if(player.rank >= 0) {
             for(p in Bukkit.getOnlinePlayers()) {
-                p.sendMessage("${player.name}님이 탈락하셨습니다.")
+                p.sendMessage("${ChatColor.RED}${ChatColor.BOLD}${player.name}님이 탈락하셨습니다.")
             }
         }
     }
